@@ -1,0 +1,8 @@
+GUI (Graphical User Interface) and CLI (Command Line Interface); What's the difference? In most cases, when you interact with a computer you are interacting with a GUI, 
+when you click on an icon, use a browser like google, or even move your mouse curser, you're interacting with a GUI. Its a user-friendly way to interact with code. An icon (any visual
+object that is interactable) is "attached" to a command, which then usually triggers other code to activate (such as opening an app on a computer). CLI, on the contrary, is generally 
+not as user friendly. If you open the command prompt on your computer, open inspect element on a browser, or try your hand at coding in a software like Visual Studio, you're likely 
+to interact with CLI. They take raw text as inputs and then interprets it, not using icons or symbols. CLI requires more experience to be able to use, including knowing the basic 
+commands to run it, and is less user-friendly than GUI systems. Most all people know how to use GUIs, even navigating to this little paper likely utilized GUIs, while comparitively
+few people know how to work CLI. If you know where to look, commands that GUIs send can be read by someone using a CLI, but it would definately be less interpretable than just knowing
+what an icon does!
