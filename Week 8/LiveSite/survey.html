@@ -3,85 +3,158 @@
         <script>
             function checkCompleted()
             {
-                var completed = true
+                var completed = true;
+                let focused = true;
+                if (checkAgree() != true)
+                {
+                    completed = false;
+                    document.getElementById("terms").style.color = "red";
+                    if (focused == true) {
+                        document.getElementById("agreeTerms").focus();
+                        focused = false;
+                    }
+                }
+                if (chcekMultiple() != true)
+                {
+                    completed = false;
+                    document.getElementById("boxesColor").style.color = "red";
+                    if (focused == true) {
+                        document.getElementById("seenOnInstagram").focus();
+                        focused =  false;
+                    }
+
+                }
                 if (document.getElementById("wouldWatchLive").value == "-1")
                 {
                     completed =  false;
+                    document.getElementById("wouldWatchLive").style.border = "1.5px solid red";
+                    document.getElementById("wouldWatchLive").style.color = "red";
+                    if (focused == true) {
+                        document.getElementById("wouldWatchLive").focus();
+                        focused =  false;
+                    }
                 }
                 if (document.getElementById("wouldNotWatchLive").value == "-1")
                 {
                     completed =  false;
-                }
-                if (document.getElementById("watchGames").value == "input")
-                {
-                    completed = false;
-                }
-                if (document.getElementById("notWatchGames").value == "input")
-                {
-                    completed = false;
-                }
-                if (document.getElementById("startTime").value == "")
-                {
-                    completed = false;
-                }
-                if (document.getElementById("endTime").value == "")
-                {
-                    completed = false;
-                }
-                if (document.getElementById("timeZone").value == "Time zone")
-                {
-                    completed = false;
+                    document.getElementById("wouldNotWatchLive").style.border = "1.5px solid red";
+                    document.getElementById("wouldNotWatchLive").style.color = "red";
+                    if (focused == true) {
+                        document.getElementById("wouldNotWatchLive").focus();
+                        focused = false;
+                    }
                 }
                 if (completed)
                 {
-                    window.alert("Thanks for submitting!")
-                    getData()
+                    window.alert("Thanks for submitting!");
+                    getData();
                 } else {
-                    window.alert("Not all inputs were inputted!")
+                    if (checkAgree())
+                    {
+                        window.alert("Not all inputs were inputted!");
+                    } else {
+                        window.alert("You need to agree to the terms!");
+                    }
                 }
                 }
-            function getData()
+            function chcekMultiple()
             {
+                let oneComplete = false;
                 let seenOnTwitch = document.getElementById("seenOnTwitch");
                 if (seenOnTwitch.checked){
                     seenOnTwitch = true;
+                    oneComplete = true;
                 } else {
                     seenOnTwitch = false;
                 }
                 let seenOnYoutube = document.getElementById("seenOnYoutube");
                 if (seenOnYoutube.checked) {
                     seenOnYoutube = true;
+                    oneComplete = true;
                 }  else {
                     seenOnYoutube = false;
                 }
                 let seenOnTwitter = document.getElementById("seenOnTwitter");
                 if (seenOnTwitter.checked) {
                     seenOnTwitter = true;
+                    oneComplete = true;
                 } else {
                     seenOnTwitter = false;
                 }
                 let seenOnInstagram = document.getElementById("seenOnInstagram");
                 if (seenOnInstagram.checked) {
                     seenOnInstagram = true;
+                    oneComplete = true;
                 } else {
                     seenOnInstagram = false;
                 }
                 let seenOnDiscord = document.getElementById("seenOnDiscord");
                 if (seenOnDiscord.checked) {
                     seenOnDiscord = true;
+                    oneComplete = true;
                 } else {
                     seenOnDiscord = false;
                 }
-                var seenOnOther = document.getElementById("seenOnOther").value;
-                var wouldWatchLive = document.getElementById("wouldWatchLive").value;
-                var watchGames = document.getElementById("watchGames").value;
-                var notWatchGames = document.getElementById("notWatchGames").value;
-                var startTime = document.getElementById("startTime").value;
-                var endTime = document.getElementById("endTime").value;
-                var wouldWatchLive = document.getElementById("wouldWatchLive").value;
-                var wouldNotWatchLive = document.getElementById("wouldNotWatchLive").value;
-                var timeZone = document.getElementById("timeZone").value;
+                let seenOnOther = document.getElementById("seenOnOther").value;
+                if (seenOnOther != "Other") {
+                    seenOnOther = true;
+                    oneComplete = true;
+                } else {
+                    seenOnOther = false;
+                }
+                let seenOnNone = document.getElementById("seenOnNone");
+                if (seenOnNone.checked) {
+                    seenOnNone = true;
+                    oneComplete = true;
+                } else {
+                    seenOnNone = false;
+                }
+                return oneComplete;
             }
+
+            function getData()
+            {
+                seenOnList = [];
+                if ((document.getElementById("seenOnTwitch")).checked) {
+                    seenOnList.push("Twitch");
+                }
+                if ((document.getElementById("seenOnYoutube")).checked) {
+                    seenOnList.push("Youtube");
+                }
+                if ((document.getElementById("seenOnTwitter")).checked) {
+                    seenOnList.push("Twitter");
+                }
+                if ((document.getElementById("seenOnInstagram")).checked) {
+                    seenOnList.push("Instagram");
+                }
+                if ((document.getElementById("seenOnDiscord")).checked) {
+                    seenOnList.push("Discord");
+                }
+                if ((document.getElementById("seenOnOther")).value != "Other") {
+                    seenOnList.push(document.getElementById("seenOnOther").value);
+                }
+                if ((document.getElementById("seenOnNone")).checked) {
+                    seenOnList.push("None");
+                }
+                let wouldWatchLive = document.getElementById("wouldWatchLive").value;
+                let wouldNotWatchLive = document.getElementById("wouldNotWatchLive").value;
+                let wouldWatchGames = document.getElementById("watchGames").value;
+                let wouldNotWatchGames = document.getElementById("notWatchGames").value;
+                let timeStart = document.getElementById("startTime").value;
+                let timeEnd = document.getElementById("endTime").value;
+                let timeZone = document.getElementById("timeZone").value;
+            }
+            function checkAgree() 
+            {
+                let body = false;
+                body = document.getElementById("agreeTerms");
+                if (body.checked) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+
         </script>
         ⠀Thanks for looking at this survey!
         <br> ⠀It will help me improve this site, my socials, and just see how people are feeling!
@@ -99,23 +172,31 @@
     </head>
     <body>
         <br>
+        <br> ⠀Terms:
         <br> ⠀These questions will be seen by me and me alone,
         <br> ⠀and may be used to update what I do on social medias,
-        <br> ⠀and how I do it. 
-        <br> ⠀please fill out all fields!
+        <br> ⠀and how I do it. Responses will be collected and stored.
+        <br> 
+        <br> ⠀<input type="checkbox" id="agreeTerms" autofocus> <span id="terms">Check here to agree to the terms *</span>
+   
+
+        <br> -----------------------------------------------------
+        <br> ⠀Please make sure to fill out all fields with a *!
+        <br> -----------------------------------------------------
         
-        <br>
-        <br> ⠀What social platforms have you seen me on? (Youtube, Instagram, Twitter, Twitch, ETC)
+        <br> <span id="boxesColor">
+        <br> ⠀What social platform(s) have you seen me on? (Youtube, Instagram, Twitter, Twitch, ETC) * </span>
         <br> ⠀<input type="checkbox" id="seenOnTwitch">⠀Twitch
         <br> ⠀<input type="checkbox" id="seenOnYoutube">⠀Youtube
         <br> ⠀<input type="checkbox" id="seenOnTwitter">⠀Twitter
         <br> ⠀<input type="checkbox" id="seenOnInstagram">⠀Instagram
         <br> ⠀<input type="checkbox" id="seenOnDiscord">⠀Discord
+        <br> ⠀<input type="checkbox" id="seenOnNone">⠀None
         <br> ⠀<input type="text" value="Other" id="seenOnOther">
         <br>
 
         <br>
-        <br> ⠀Would you watch live content? (Twitch, Youtube, ETC)
+        <br> ⠀Would you watch live content? (Twitch, Youtube, ETC) *
         <br>
         ⠀<select id="wouldWatchLive">
             <option value="-1">Select option</option>
@@ -125,7 +206,7 @@
         <br>
 
         <br>
-        <br> ⠀Would you watch not live content? (Twitch vods, Youtube, Instagram, ETC)
+        <br> ⠀Would you watch not live content? (Twitch vods, Youtube, Instagram, ETC) *
         <br>
         ⠀<span><select id="wouldNotWatchLive">
             <option value="-1">Select option</option>
