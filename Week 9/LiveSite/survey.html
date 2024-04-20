@@ -1,0 +1,244 @@
+<html>
+    <head>
+        <script>
+            function checkCompleted()
+            {
+                var completed = true;
+                let focused = true;
+                if (checkAgree() != true)
+                {
+                    completed = false;
+                    document.getElementById("terms").style.color = "red";
+                    if (focused == true) {
+                        document.getElementById("agreeTerms").focus();
+                        focused = false;
+                    }
+                }
+                if (chcekMultiple() != true)
+                {
+                    completed = false;
+                    document.getElementById("boxesColor").style.color = "red";
+                    if (focused == true) {
+                        document.getElementById("seenOnInstagram").focus();
+                        focused =  false;
+                    }
+
+                }
+                if (document.getElementById("wouldWatchLive").value == "-1")
+                {
+                    completed =  false;
+                    document.getElementById("wouldWatchLive").style.border = "1.5px solid red";
+                    document.getElementById("wouldWatchLive").style.color = "red";
+                    if (focused == true) {
+                        document.getElementById("wouldWatchLive").focus();
+                        focused =  false;
+                    }
+                }
+                if (document.getElementById("wouldNotWatchLive").value == "-1")
+                {
+                    completed =  false;
+                    document.getElementById("wouldNotWatchLive").style.border = "1.5px solid red";
+                    document.getElementById("wouldNotWatchLive").style.color = "red";
+                    if (focused == true) {
+                        document.getElementById("wouldNotWatchLive").focus();
+                        focused = false;
+                    }
+                }
+                if (completed)
+                {
+                    window.alert("Thanks for submitting!");
+                    getData();
+                } else {
+                    if (checkAgree())
+                    {
+                        window.alert("Not all inputs were inputted!");
+                    } else {
+                        window.alert("You need to agree to the terms!");
+                    }
+                }
+                }
+            function chcekMultiple()
+            {
+                let oneComplete = false;
+                let seenOnTwitch = document.getElementById("seenOnTwitch");
+                if (seenOnTwitch.checked){
+                    seenOnTwitch = true;
+                    oneComplete = true;
+                } else {
+                    seenOnTwitch = false;
+                }
+                let seenOnYoutube = document.getElementById("seenOnYoutube");
+                if (seenOnYoutube.checked) {
+                    seenOnYoutube = true;
+                    oneComplete = true;
+                }  else {
+                    seenOnYoutube = false;
+                }
+                let seenOnTwitter = document.getElementById("seenOnTwitter");
+                if (seenOnTwitter.checked) {
+                    seenOnTwitter = true;
+                    oneComplete = true;
+                } else {
+                    seenOnTwitter = false;
+                }
+                let seenOnInstagram = document.getElementById("seenOnInstagram");
+                if (seenOnInstagram.checked) {
+                    seenOnInstagram = true;
+                    oneComplete = true;
+                } else {
+                    seenOnInstagram = false;
+                }
+                let seenOnDiscord = document.getElementById("seenOnDiscord");
+                if (seenOnDiscord.checked) {
+                    seenOnDiscord = true;
+                    oneComplete = true;
+                } else {
+                    seenOnDiscord = false;
+                }
+                let seenOnOther = document.getElementById("seenOnOther").value;
+                if (seenOnOther != "Other") {
+                    seenOnOther = true;
+                    oneComplete = true;
+                } else {
+                    seenOnOther = false;
+                }
+                let seenOnNone = document.getElementById("seenOnNone");
+                if (seenOnNone.checked) {
+                    seenOnNone = true;
+                    oneComplete = true;
+                } else {
+                    seenOnNone = false;
+                }
+                return oneComplete;
+            }
+
+            function getData()
+            {
+                seenOnList = [];
+                if ((document.getElementById("seenOnTwitch")).checked) {
+                    seenOnList.push("Twitch");
+                }
+                if ((document.getElementById("seenOnYoutube")).checked) {
+                    seenOnList.push("Youtube");
+                }
+                if ((document.getElementById("seenOnTwitter")).checked) {
+                    seenOnList.push("Twitter");
+                }
+                if ((document.getElementById("seenOnInstagram")).checked) {
+                    seenOnList.push("Instagram");
+                }
+                if ((document.getElementById("seenOnDiscord")).checked) {
+                    seenOnList.push("Discord");
+                }
+                if ((document.getElementById("seenOnOther")).value != "Other") {
+                    seenOnList.push(document.getElementById("seenOnOther").value);
+                }
+                if ((document.getElementById("seenOnNone")).checked) {
+                    seenOnList.push("None");
+                }
+                let wouldWatchLive = document.getElementById("wouldWatchLive").value;
+                let wouldNotWatchLive = document.getElementById("wouldNotWatchLive").value;
+                let wouldWatchGames = document.getElementById("watchGames").value;
+                let wouldNotWatchGames = document.getElementById("notWatchGames").value;
+                let timeStart = document.getElementById("startTime").value;
+                let timeEnd = document.getElementById("endTime").value;
+                let timeZone = document.getElementById("timeZone").value;
+            }
+            function checkAgree() 
+            {
+                let body = false;
+                body = document.getElementById("agreeTerms");
+                if (body.checked) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+
+        </script>
+        ⠀Thanks for looking at this survey!
+        <br> ⠀It will help me improve this site, my socials, and just see how people are feeling!
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+        <style>
+            body{
+                background-color: rgb(31, 31, 31);
+                color: rgb(122, 247, 252);
+            }
+            span{
+                outline-color:rgb(18, 160, 255);
+                background-color: rgba(0, 0, 0, 0);
+            }
+        </style>
+    </head>
+    <body>
+        <br>
+        <br> ⠀Terms:
+        <br> ⠀These questions will be seen by me and me alone,
+        <br> ⠀and may be used to update what I do on social medias,
+        <br> ⠀and how I do it. Responses will be collected and stored.
+        <br> 
+        <br> ⠀<input type="checkbox" id="agreeTerms" autofocus> <span id="terms">Check here to agree to the terms *</span>
+   
+
+        <br> -----------------------------------------------------
+        <br> ⠀Please make sure to fill out all fields with a *!
+        <br> -----------------------------------------------------
+        
+        <br> <span id="boxesColor">
+        <br> ⠀What social platform(s) have you seen me on? (Youtube, Instagram, Twitter, Twitch, ETC) * </span>
+        <br> ⠀<input type="checkbox" id="seenOnTwitch">⠀Twitch
+        <br> ⠀<input type="checkbox" id="seenOnYoutube">⠀Youtube
+        <br> ⠀<input type="checkbox" id="seenOnTwitter">⠀Twitter
+        <br> ⠀<input type="checkbox" id="seenOnInstagram">⠀Instagram
+        <br> ⠀<input type="checkbox" id="seenOnDiscord">⠀Discord
+        <br> ⠀<input type="checkbox" id="seenOnNone">⠀None
+        <br> ⠀<input type="text" value="Other" id="seenOnOther">
+        <br>
+
+        <br>
+        <br> ⠀Would you watch live content? (Twitch, Youtube, ETC) *
+        <br>
+        ⠀<select id="wouldWatchLive">
+            <option value="-1">Select option</option>
+            <option value="Yes">Yes</option>
+            <option  value="No">No</option>
+        </select>
+        <br>
+
+        <br>
+        <br> ⠀Would you watch not live content? (Twitch vods, Youtube, Instagram, ETC) *
+        <br>
+        ⠀<span><select id="wouldNotWatchLive">
+            <option value="-1">Select option</option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+        </select></span>
+        <br>
+
+        <br>
+        <br> ⠀What type of games would you watch?
+        <br> ⠀<input type="text" value="input" id="watchGames">
+        <br> ⠀What type of games would you NOT watch?
+        <br> ⠀<input type="text" value="input" id="notWatchGames">
+        <br>
+
+        <br>
+        <br> ⠀Typically, what times would you watch streams
+        <br> ⠀<input type="time" id="startTime">⠀to⠀<input type="time" id="endTime">
+        <br> ⠀<input type="text" id="timeZone" value="Time zone">
+        <br>
+
+        <br>
+        <br> ⠀Thank you for your time! Submit using the button below!
+        <br> ⠀<button type="button" id="submit" class="btn btn-outline-primary" onClick="checkCompleted()">Submit!</button>
+        <br> ⠀<img src="./Pictures/wowers.png" height="25" width="25">
+        <br>
+
+    <footer>
+        <br>⠀NAVIGATION <br>
+        ⠀<a href="information.html">Info</a>⠀
+        ⠀<a href="survey.html">Survey</a>
+        <br> ⠀<a href="index.html">Return to Homepage</a>
+    </footer>
+    </body>
+</html>

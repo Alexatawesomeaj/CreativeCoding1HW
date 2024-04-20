@@ -1,0 +1,15 @@
+.discGradient{
+    background-image: linear-gradient(to right, rgba(56, 84, 243, 0.384), rgba(255, 255, 255, 0), rgba(255, 255, 255, 0), rgba(255, 255, 255, 0))
+}
+.twitGradient{
+    background-image: linear-gradient(to right, rgba(56, 206, 243, 0.445), rgba(255, 255, 255, 0), rgba(255, 255, 255, 0), rgba(255, 255, 255, 0))
+}
+.instaGradient{
+    background-image: linear-gradient(to right, rgba(132, 0, 255, 0.5), rgba(255, 174, 0, 0.13), rgba(255, 255, 255, 0))
+}
+.youtGradient{
+    background-image: linear-gradient(to right, rgba(255, 0, 0, 0.5), rgba(255, 255, 255, 0), rgba(255, 255, 255, 0), rgba(255, 255, 255, 0))
+}
+.twitchGradient{
+    background-image: linear-gradient(to right, rgba(121, 0, 158, 0.8), rgba(255, 255, 255, 0), rgba(255, 255, 255, 0), rgba(255, 255, 255, 0))
+}
