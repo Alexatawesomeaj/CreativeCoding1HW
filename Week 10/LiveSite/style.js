@@ -4,7 +4,7 @@
   var size = 24;
 //location of Author Text
   var authX = 165;
-  var authy = 160;
+  var authY = 160;
 //general arm details
   var armSize = 9;
   var armColorR = 235;
@@ -54,6 +54,37 @@
   var pantR = 1;
   var pangG = 5;
   var pantB = 15;
+//left leg
+  var lLegX1 = 200;
+  var lLegY1 = 92;
+  var lLegX2 = 213;
+  var lLegY2 = 92;
+  var lLegX3 = 217;
+  var lLegY3 = 130;
+  var lLegX4 = 203;
+  var lLegY4 = 135;
+//right leg
+  var rLegX1 = 200;
+  var rLegY1 = 92;
+  var rLegX2 = 213;
+  var rLegY2 = 92;
+  var rLegX3 = 217;
+  var rLegY3 = 130;
+  var rLegX4 = 203;
+  var rLegY4 = 135;
+//facial features
+  var lEyeX = 192;
+  var lEyeY = 19;
+  var lEyeD = 8;
+  var rEyeX = 205;
+  var rEyeY = 19;
+  var rEyeD = 8;
+  var lPupilX = 192;
+  var lPupilY = 19;
+  var lPupilD = 4;
+  var rPupilX = 205;
+  var rPupilY = 19;
+  var rPupilD = 4;
 
 
 function sleep(ms) {
@@ -70,19 +101,19 @@ function setup() {
   function draw() {
     //Generates a color for canvas (clear), and the text on it
     clear();
-    textSize(24);
+    textSize(size);
     fill(255);
     textStyle(ITALIC);
     strokeWeight(0);
     textFont("Gabriola")
-    text("Waving Man", 0, 24);
+    text("Waving Man", titleX, titleY);
     textFont("Ink Free");
-    text("Alex K", 165, 160);
+    text("Alex K", authX, authY);
     
     //right arm
-    strokeWeight(9);
-    stroke(235, 187, 129);
-    line(220, 40, 240, 5);
+    strokeWeight(armSize);
+    stroke(armColorR, armColorG, armColorB);
+    line(rArmPosX1, rArmPosY1, rArmPosX2, rArmPosY2);
     
     //left arm
     line(179, 54, 165, 80);
@@ -102,14 +133,11 @@ function setup() {
     
     //left leg
     fill(1, 5, 15);
-    triangle(178, 130, 198, 92, 190, 135);
-    triangle(178, 130, 186.5, 92, 199, 92);
-    //quad(178, 130) *TODO
+    quad(186, 92, 198, 92, 192, 135, 178, 130);
     
     //right leg
-    triangle(200, 92, 202, 135, 214, 92);
-    triangle(212, 91, 202, 135, 215, 130);
-    
+    quad(200, 92, 213, 92, 217, 130, 203, 135);
+
     //face
     fill(255);
     circle(192, 19, 8);
