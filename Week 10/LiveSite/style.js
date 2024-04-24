@@ -52,10 +52,10 @@
   var rSleeveY3 = 40;
 //pants color
   var pantR = 1;
-  var pangG = 5;
+  var pantG = 5;
   var pantB = 15;
 //left leg
-  var lLegX1 = 200;
+  var lLegX1 = 185;
   var lLegY1 = 92;
   var lLegX2 = 213;
   var lLegY2 = 92;
@@ -85,6 +85,9 @@
   var rPupilX = 205;
   var rPupilY = 19;
   var rPupilD = 4;
+  var killArc = 0;
+//basic
+  var armChange = 1
 
 
 function sleep(ms) {
@@ -116,40 +119,40 @@ function setup() {
     line(rArmPosX1, rArmPosY1, rArmPosX2, rArmPosY2);
     
     //left arm
-    line(179, 54, 165, 80);
+    line(lArmPosX1, lArmPosY1, lArmPosX2, lArmPosY2);
     
     //head
-    fill(235, 187, 129);
+    fill(headR, headG, headB);
     strokeWeight(0);
-    circle(199, 22, 36);
+    circle(headX, headY, headD);
     
     //chest
-    fill(36, 96, 191);
-    rect(186, 40, 27, 52);
+    fill(shirtR, shirtG, shirtB);
+    rect(chestX1, chestY1, chestX2, chestY2);
     
     //sleeves
-    triangle(186, 40, 186, 53, 171, 53);
-    triangle(213, 40, 213, 53, 229, 40);
+    triangle(lSleeveX1, lSleeveY1, lSleeveX2, lSleeveY2, lSleeveX3, lSleeveY3);
+    triangle(rSleeveX1, rSleeveY1, rSleeveX2, rSleeveY2, rSleeveX3, rSleeveY3);
     
     //left leg
-    fill(1, 5, 15);
-    quad(186, 92, 198, 92, 192, 135, 178, 130);
+    fill(pantR, pantG, pantB);
+    quad(lLegX1, lLegY1, lLegX2, lLegY2, lLegX3, lLegY3, lLegX4, lLegY4);
     
     //right leg
-    quad(200, 92, 213, 92, 217, 130, 203, 135);
+    quad(rLegX1, rLegY1, rLegX2, rLegY2, rLegX3, rLegY3, rLegX4, rLegY4);
 
     //face
     fill(255);
-    circle(192, 19, 8);
-    circle(205, 19, 8);
+    circle(lEyeX, lEyeY, lEyeD);
+    circle(rEyeX, lEyeY, lEyeD);
     fill(0);
-    circle(192, 19, 4);
-    circle(205, 19, 4);
-    arc(199, 29, 14, 14, 0, PI, CHORD);
+    circle(lPupilX, lPupilY, lPupilD);
+    circle(rPupilX, lPupilY, lPupilD);
+    arc(199 + killArc, 29 + killArc, 14 + killArc, 14 + killArc, 0 + killArc, PI, CHORD);
     fill(255,0,0);
-    ellipse(199, 34, 7, 4);
+    ellipse(199 + killArc, 34 + killArc, 7 + killArc, 4 + killArc);
     
     //hair
     fill(31, 16, 5);
-    arc(199, 13, 32, 20, PI, TWO_PI, CHORD);
+    arc(199 + killArc, 13 + killArc, 32 + killArc, 20 + killArc, PI, TWO_PI, CHORD);
   }
