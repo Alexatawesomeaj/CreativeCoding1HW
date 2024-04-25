@@ -2,9 +2,11 @@
   var titleX = 0;
   var titleY = 24;
   var size = 24;
+  var titleT = "Waving Man"
 //location of Author Text
   var authX = 165;
   var authY = 160;
+  var authT = "Alex K";
 //general arm details
   var armSize = 9;
   var armColorR = 235;
@@ -57,12 +59,12 @@
 //left leg
   var lLegX1 = 185;
   var lLegY1 = 92;
-  var lLegX2 = 213;
+  var lLegX2 = 200;
   var lLegY2 = 92;
-  var lLegX3 = 217;
-  var lLegY3 = 130;
-  var lLegX4 = 203;
-  var lLegY4 = 135;
+  var lLegX3 = 194;
+  var lLegY3 = 135;
+  var lLegX4 = 180;
+  var lLegY4 = 130;
 //right leg
   var rLegX1 = 200;
   var rLegY1 = 92;
@@ -87,8 +89,16 @@
   var rPupilD = 4;
   var killArc = 0;
 //basic
-  var armChange = 1
-
+  var armChange = 2;
+  var timeVar = 0;
+  var move = false;
+  var rectX = (2*Math.random()) + 1;
+  var rectY = (2*Math.random()) + 1;
+  var authMoveX = 2;
+  var authMoveY = 0;
+  var headSize = 1;
+  var headMoveX = 2;
+  var headMoveY = 2;
 
 function sleep(ms) {
   //Borrowed code to implement a delay (sleep) function
@@ -97,7 +107,7 @@ function sleep(ms) {
 
 function setup() {
   //Generates a canvas to draw on top of
-    createCanvas(800, 1200);
+    createCanvas(800, 400);
   }
   
   
@@ -109,14 +119,14 @@ function setup() {
     textStyle(ITALIC);
     strokeWeight(0);
     textFont("Gabriola")
-    text("Waving Man", titleX, titleY);
+    text(titleT, titleX, titleY);
     textFont("Ink Free");
-    text("Alex K", authX, authY);
+    text(authT, authX + authMoveX, authY + authMoveY);
     
     //right arm
     strokeWeight(armSize);
     stroke(armColorR, armColorG, armColorB);
-    line(rArmPosX1, rArmPosY1, rArmPosX2, rArmPosY2);
+    line(rArmPosX1 + killArc, rArmPosY1, rArmPosX2 + killArc, rArmPosY2);
     
     //left arm
     line(lArmPosX1, lArmPosY1, lArmPosX2, lArmPosY2);
@@ -131,23 +141,23 @@ function setup() {
     rect(chestX1, chestY1, chestX2, chestY2);
     
     //sleeves
-    triangle(lSleeveX1, lSleeveY1, lSleeveX2, lSleeveY2, lSleeveX3, lSleeveY3);
-    triangle(rSleeveX1, rSleeveY1, rSleeveX2, rSleeveY2, rSleeveX3, rSleeveY3);
+    triangle(lSleeveX1 + killArc, lSleeveY1, lSleeveX2 + killArc, lSleeveY2, lSleeveX3 + killArc, lSleeveY3);
+    triangle(rSleeveX1 + killArc, rSleeveY1, rSleeveX2 + killArc, rSleeveY2, rSleeveX3 + killArc, rSleeveY3);
     
     //left leg
     fill(pantR, pantG, pantB);
-    quad(lLegX1, lLegY1, lLegX2, lLegY2, lLegX3, lLegY3, lLegX4, lLegY4);
+    quad(lLegX1 + killArc, lLegY1, lLegX2 + killArc, lLegY2, lLegX3 + killArc, lLegY3, lLegX4 + killArc, lLegY4);
     
     //right leg
-    quad(rLegX1, rLegY1, rLegX2, rLegY2, rLegX3, rLegY3, rLegX4, rLegY4);
+    quad(rLegX1 + killArc, rLegY1, rLegX2 + killArc, rLegY2, rLegX3 + killArc, rLegY3, rLegX4 + killArc, rLegY4);
 
     //face
     fill(255);
-    circle(lEyeX, lEyeY, lEyeD);
-    circle(rEyeX, lEyeY, lEyeD);
+    circle(lEyeX + killArc, lEyeY, lEyeD);
+    circle(rEyeX + killArc, lEyeY, lEyeD);
     fill(0);
-    circle(lPupilX, lPupilY, lPupilD);
-    circle(rPupilX, lPupilY, lPupilD);
+    circle(lPupilX + killArc, lPupilY, lPupilD);
+    circle(rPupilX + killArc, lPupilY, lPupilD);
     arc(199 + killArc, 29 + killArc, 14 + killArc, 14 + killArc, 0 + killArc, PI, CHORD);
     fill(255,0,0);
     ellipse(199 + killArc, 34 + killArc, 7 + killArc, 4 + killArc);
@@ -155,4 +165,78 @@ function setup() {
     //hair
     fill(31, 16, 5);
     arc(199 + killArc, 13 + killArc, 32 + killArc, 20 + killArc, PI, TWO_PI, CHORD);
-  }
+
+    //border
+    noFill();
+    stroke(0);
+    strokeWeight(1);
+    rect(1, 1, 799, 399);
+
+    //moving the arm
+    rArmPosX2 += armChange;
+    if (rArmPosX2 >= 255) {armChange *= -1;} 
+    if (rArmPosX2 < 225) {armChange *= -1;}
+    timeVar += 1;
+    if (timeVar >= 50) {move = true;}
+    // sets shapes to move after a time
+    if (move) {
+      //moves chest
+      chestX1 += rectX;
+      chestY1 += rectY;
+
+      //moves author text
+      authX += authMoveX;
+      authY += authMoveY;
+
+      //voids non-important objects
+      titleT = "";
+      killArc = 1000;
+
+      //moves/sizes head
+      headX += headMoveX;
+      headY += headMoveY;
+      headD += headSize;
+      if (headX + (headD/2) >= 800) {if(headMoveX == 2) {headMoveX *= -1;}}
+      if (headX - (headD/2) <= 1) {if (headMoveX == -2) {headMoveX *= -1;}}
+      if (headY + (headD/2) >= 400) {if (headMoveY == 2) {headMoveY *= -1;}}
+      if (headY - (headD/2) <= 1) {if (headMoveY == -2) {headMoveY *=-1}}
+      if (headD < 1 || headD > 60) {headSize *= -1}
+      if (headD < 1) {
+        headR = Math.floor((255*Math.random()));
+        headG = Math.floor((255*Math.random()));
+        headB = Math.floor((255*Math.random()));
+      }
+
+      //moves name text variables
+      if (authX >= 735) {
+        authMoveX = 0;
+        authMoveY = 2;
+      }
+      if (authY >= 390) {
+        authMoveX = -2;
+        authMoveY = 0;
+      }
+      if (authX <= 1) {
+        authMoveY = -2;
+        authMoveX = 0;
+      }
+      if (authY <= 24) {
+        authMoveY = 0;
+        authMoveX = 2;
+      }
+      
+      //changes chest color
+      if (chestX1 <= 1 || chestX1 >= 773) {
+        rectX *= -1;
+        shirtR = Math.floor((255*Math.random()));
+        shirtG = Math.floor((255*Math.random()));
+        shirtB = Math.floor((255*Math.random()));
+      }
+      if (chestY1 <= 1 || chestY1 >= 348) {
+        rectY *= -1;
+        shirtR = Math.floor((255*Math.random()));
+        shirtG = Math.floor((255*Math.random()));
+        shirtB = Math.floor((255*Math.random()));
+      }
+    }
+  } 
