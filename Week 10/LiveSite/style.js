@@ -129,7 +129,7 @@ function setup() {
     line(rArmPosX1 + killArc, rArmPosY1, rArmPosX2 + killArc, rArmPosY2);
     
     //left arm
-    line(lArmPosX1, lArmPosY1, lArmPosX2, lArmPosY2);
+    line(lArmPosX1 + killArc, lArmPosY1, lArmPosX2 + killArc, lArmPosY2);
     
     //head
     fill(headR, headG, headB);
@@ -177,7 +177,7 @@ function setup() {
     if (rArmPosX2 >= 255) {armChange *= -1;} 
     if (rArmPosX2 < 225) {armChange *= -1;}
     timeVar += 1;
-    if (timeVar >= 50) {move = true;}
+    if (timeVar >= 500) {move = true;}
     // sets shapes to move after a time
     if (move) {
       //moves chest
@@ -205,7 +205,7 @@ function setup() {
         headR = Math.floor((255*Math.random()));
         headG = Math.floor((255*Math.random()));
         headB = Math.floor((255*Math.random()));
-      }
+      }      
 
       //moves name text variables
       if (authX >= 735) {
