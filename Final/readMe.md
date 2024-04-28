@@ -26,6 +26,7 @@ Basic timeline:
 (+ items are for if time allows)
 (all dates are hopeful estimates, but will be done before the date after)
 
+I will have to commit multiple hours a day after my daily high-school classes, which should be manageable
 As of writing this, I am starting on the *basic* basics of the game, but have done no prior work prior to this on this project
 
 If time allows, I would also add support to changing keybinds to different keys, as well as adding a few different color pallets into the game.
