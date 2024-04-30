@@ -1,5 +1,6 @@
 var player = []
 var platforms = []
+var canJump = true
 
 function setup() {
     createCanvas(1000, 500)
@@ -7,7 +8,7 @@ function setup() {
     var b = new Player()
     player.push(b)
 
-    var c = new Platform(100, 400, 50, -25)
+    var c = new Platform(100, 500, 50, -25)
     platforms.push(c)
 }
 
@@ -24,9 +25,7 @@ function draw() {
 class Platform {
     constructor(x, y, w, h) {
         this.pos1 = createVector(x, y)
-        let x2 = x+w
-        let y2 = y+h
-        this.pos2 = createVector(x2, y2)
+        this.pos2 = createVector(w, h)
     }
     show() {
         noStroke()
@@ -37,37 +36,49 @@ class Platform {
 
 class Player {
     constructor() {
-        this.radius = 10
-        this.pos = createVector(10, 490)
+        this.size = 25
+        this.pos = createVector(10, 500)
         this.vel = 0
+        this.below = this.pos.y - 1
     }
     edges() {
-        if (this.pos.x < this.radius) {this.pos.x = this.radius}
+        if (this.pos.x < 0) {this.pos.x = 0}
         if (this.pos.x > 1000 - this.radius) {this.pos.x = 1000 - this.radius}
     }
     show() {
         noStroke()
         fill(255)
-        ellipse(this.pos.x, this.pos.y, this.radius*2)
+        rect(this.pos.x, this.pos.y, this.size, 0-this.size)
     }
     collide() {
-        for(var i = 0; i <= platforms.length; i ++)
+        for(var i = 0; i < platforms.length; i ++)
         {
-            if (this.pos.y + this.radius >= platforms[i].pos2.y &&
-                this.pos.y - this.radius <= platforms[i].pos1.y &&
-                this.pos.x + this.radius >= platforms[i].pos1.x &&
-                this.pos.x - this.radius <= platforms[i].pos2.x)
+            if (this.pos.x <= platforms[i].pos1.x + platforms[i].pos2.x &&
+                this.pos.x + this.size >= platforms[i].pos1.x &&
+                this.pos.y >= platforms[i].pos1.y + platforms[i].pos2.y &&
+                this.pos.y - this.size <= platforms[i].pos1.y)
                 {
-                    console.log("colliding")
+                    if (keyIsDown(65)) {
+                        console.log("right")
+                    } else if (keyIsDown(68)) {
+                        console.log("left")
+                    }
+                    if (this.below >= platforms[i].pos1.y-platforms[1].pos2.y) {
+                        console.log("up")
+                    }
                 }
         }
         }
     move() {
         if (keyIsDown(68)){this.pos.x += 5}
-        else if (keyIsDown(65)){this.pos.x-=5}
+        if (keyIsDown(65)){this.pos.x-=5}
     }
     jump() {
-        console.log()
+        if (canJump) {
+            canJump = false
+            this.pos.y -= 50
+            setTimeout(() => {this.pos.y += 50; canJump = true}, 500);
+        }
     }
 }
 
