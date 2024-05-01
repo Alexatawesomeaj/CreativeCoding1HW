@@ -1,6 +1,10 @@
 var player = []
 var platforms = []
 var canJump = true
+var momentum = 0
+var temp = 500
+var needFloat = false
+var notColliding = true
 
 function setup() {
     createCanvas(1000, 500)
@@ -10,6 +14,9 @@ function setup() {
 
     var c = new Platform(100, 500, 50, -25)
     platforms.push(c)
+
+    var c = new Platform(200, 475, 50, -25)
+    platforms.push(c)
 }
 
 function draw() {
@@ -17,9 +24,15 @@ function draw() {
 
     player[0].show()
     player[0].edges()
+    player[0].gravity()
     player[0].move()
     player[0].collide()
-    platforms[0].show()
+    player[0].hasMomentum()
+    player[0].float()
+    for(var a = 0; a < platforms.length(); a++){
+        platforms[a].show()
+    }
+    console.log(player[0].pos.y)
 }
 
 class Platform {
@@ -40,44 +53,69 @@ class Player {
         this.pos = createVector(10, 500)
         this.vel = 0
         this.below = this.pos.y - 1
+        this.above = this.pos.y + this.size + 1
+        this.left = this.pos.x - 5
+        this.right = this.pos.x + this.size + 5
     }
+    
     edges() {
         if (this.pos.x < 0) {this.pos.x = 0}
-        if (this.pos.x > 1000 - this.radius) {this.pos.x = 1000 - this.radius}
+        if (this.pos.x > 1000 - this.size) {this.pos.x = 1000 - this.size}
+        if (this.pos.y >= 500) {this.pos.y = 495}
+        if (this.pos.y <= 25) {this.pos.y = 25}
     }
+    
     show() {
         noStroke()
         fill(255)
         rect(this.pos.x, this.pos.y, this.size, 0-this.size)
     }
+
     collide() {
         for(var i = 0; i < platforms.length; i ++)
         {
-            if (this.pos.x <= platforms[i].pos1.x + platforms[i].pos2.x &&
-                this.pos.x + this.size >= platforms[i].pos1.x &&
-                this.pos.y >= platforms[i].pos1.y + platforms[i].pos2.y &&
-                this.pos.y - this.size <= platforms[i].pos1.y)
+            if (this.pos.x < platforms[i].pos1.x + platforms[i].pos2.x &&
+                this.pos.x + this.size > platforms[i].pos1.x &&
+                this.pos.y > platforms[i].pos1.y + platforms[i].pos2.y &&
+                this.pos.y - this.size < platforms[i].pos1.y)
                 {
-                    if (keyIsDown(65)) {
-                        console.log("right")
-                    } else if (keyIsDown(68)) {
-                        console.log("left")
-                    }
-                    if (this.below >= platforms[i].pos1.y-platforms[1].pos2.y) {
-                        console.log("up")
-                    }
+                    if (this.below >= platforms[i].pos1.y + platforms[i].pos2.y) {
+                        this.pos.y = platforms[i].pos1.y + platforms[i].pos2.y
+                    } else if (this.right > platforms[i].pos1.x) {
+                        this.pos.x = platforms[i].pos1.x - 7
+                    } else if (this.left <= platforms[i].pos1.x + platforms[i].pos2.x + 1){  
+                        this.pos.x = platforms[i].pos1.x + platforms[i].pos2.x + 7
+                        } 
                 }
-        }
-        }
+            }
+    }
+    
     move() {
-        if (keyIsDown(68)){this.pos.x += 5}
-        if (keyIsDown(65)){this.pos.x-=5}
+        if (keyIsDown(68)) {
+            if (notColliding) 
+                {this.pos.x += 5}
+            }
+        if (keyIsDown(65)) {
+            if (notColliding) {
+                this.pos.x -= 5}
+            }
     }
     jump() {
-        if (canJump) {
-            canJump = false
-            this.pos.y -= 50
-            setTimeout(() => {this.pos.y += 50; canJump = true}, 500);
+        if (momentum == 0) {
+            needFloat = true
+            setTimeout(() => {needFloat = false}, 250);
+        }
+    }
+    gravity() {
+        this.pos.y += 5
+    }
+    hasMomentum() {
+        momentum = temp - this.pos.y
+        temp = this.pos.y
+    }
+    float() {
+        if (needFloat == true) {
+            this.pos.y -= 10
         }
     }
 }
