@@ -88,7 +88,7 @@ class Player {
                         }
                     }
                     if (this.right >= platforms[i].pos1.x) {
-                        if (this.pos.y > platforms[i].pos1.y + platforms[i].pos2.y) {
+                        if (this.pos.y <= platforms[i].pos1.x) {
                             this.pos.x = platforms[i].pos1.x - this.size
                         }
                     } 
