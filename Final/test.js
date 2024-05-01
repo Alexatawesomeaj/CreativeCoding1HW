@@ -15,7 +15,7 @@ function setup() {
     var c = new Platform(100, 500, 50, -25)
     platforms.push(c)
 
-    var c = new Platform(200, 475, 50, -25)
+    var c = new Platform(200, 450, 50, -100)
     platforms.push(c)
 }
 
@@ -29,7 +29,7 @@ function draw() {
     player[0].collide()
     player[0].hasMomentum()
     player[0].float()
-    for(var a = 0; a < platforms.length(); a++){
+    for(var a = 0; a < platforms.length; a++){
         platforms[a].show()
     }
     console.log(player[0].pos.y)
@@ -54,8 +54,8 @@ class Player {
         this.vel = 0
         this.below = this.pos.y - 1
         this.above = this.pos.y + this.size + 1
-        this.left = this.pos.x - 5
-        this.right = this.pos.x + this.size + 5
+        this.left = this.pos.x - 1
+        this.right = this.pos.x + this.size + 1
     }
     
     edges() {
@@ -79,14 +79,25 @@ class Player {
                 this.pos.y > platforms[i].pos1.y + platforms[i].pos2.y &&
                 this.pos.y - this.size < platforms[i].pos1.y)
                 {
+                    if (this.above <= platforms[i].pos1.y) {
+                        this.pos.y = platforms[i].pos1.y - this.size - 1
+                    } 
                     if (this.below >= platforms[i].pos1.y + platforms[i].pos2.y) {
-                        this.pos.y = platforms[i].pos1.y + platforms[i].pos2.y
-                    } else if (this.right > platforms[i].pos1.x) {
-                        this.pos.x = platforms[i].pos1.x - 7
-                    } else if (this.left <= platforms[i].pos1.x + platforms[i].pos2.x + 1){  
-                        this.pos.x = platforms[i].pos1.x + platforms[i].pos2.x + 7
+                        if (this.pos.x + this.size > platforms[i].pos1.x + 5 && this.pos.x < platforms[i].pos1.x + platforms[i].pos2.x - 5) {
+                            this.pos.y = platforms[i].pos1.y + platforms[i].pos2.y
+                        }
+                    }
+                    if (this.right >= platforms[i].pos1.x) {
+                        if (this.pos.y > platforms[i].pos1.y + platforms[i].pos2.y) {
+                            this.pos.x = platforms[i].pos1.x - this.size
+                        }
+                    } 
+                    if (platforms[i].pos1.x + platforms[i].pos2.x - 1 < this.left < platforms[i].pos1.x + platforms[i].pos2.x){  
+                        if (this.pos.y > platforms[i].pos1.y + platforms[i].pos2.y) {
+                            this.pos.x = platforms[i].pos1.x + platforms[i].pos2.x
+                        }
                         } 
-                }
+                    }
             }
     }
     
