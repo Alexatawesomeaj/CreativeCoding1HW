@@ -4,7 +4,6 @@ var canJump = true
 var momentum = 0
 var temp = 500
 var needFloat = false
-var notColliding = true
 
 function setup() {
     createCanvas(1000, 500)
@@ -52,8 +51,8 @@ class Player {
         this.size = 25
         this.pos = createVector(10, 500)
         this.vel = 0
-        this.below = this.pos.y - 1
-        this.above = this.pos.y + this.size + 1
+        this.below = this.pos.y + 1
+        this.above = this.pos.y - this.size
         this.left = this.pos.x - 1
         this.right = this.pos.x + this.size + 1
     }
@@ -74,41 +73,45 @@ class Player {
     collide() {
         for(var i = 0; i < platforms.length; i ++)
         {
-            if (this.pos.x < platforms[i].pos1.x + platforms[i].pos2.x &&
-                this.pos.x + this.size > platforms[i].pos1.x &&
-                this.pos.y > platforms[i].pos1.y + platforms[i].pos2.y &&
-                this.pos.y - this.size < platforms[i].pos1.y)
+            if (this.pos.x <= platforms[i].pos1.x + platforms[i].pos2.x &&
+                this.pos.x + this.size >= platforms[i].pos1.x &&
+                this.pos.y >= platforms[i].pos1.y + platforms[i].pos2.y &&
+                this.pos.y - this.size <= platforms[i].pos1.y)
                 {
-                    if (this.above <= platforms[i].pos1.y) {
-                        this.pos.y = platforms[i].pos1.y - this.size - 1
-                    } 
-                    if (this.below >= platforms[i].pos1.y + platforms[i].pos2.y) {
-                        if (this.pos.x + this.size > platforms[i].pos1.x + 5 && this.pos.x < platforms[i].pos1.x + platforms[i].pos2.x - 5) {
-                            this.pos.y = platforms[i].pos1.y + platforms[i].pos2.y
-                        }
+                    //checks for top collision
+                    if (this.pos.y < platforms[i].pos1.y + (platforms[i].pos2.y / 2) &&
+                        this.pos.x < platforms[i].pos1.x + platforms[i].pos2.x &&
+                        this.pos.x + this.size > platforms[i].pos1.x) {
+                        this.pos.y = platforms[i].pos1.y + platforms[i].pos2.y
                     }
-                    if (this.right >= platforms[i].pos1.x) {
-                        if (this.pos.y <= platforms[i].pos1.x) {
-                            this.pos.x = platforms[i].pos1.x - this.size
-                        }
-                    } 
-                    if (platforms[i].pos1.x + platforms[i].pos2.x - 1 < this.left < platforms[i].pos1.x + platforms[i].pos2.x){  
-                        if (this.pos.y > platforms[i].pos1.y + platforms[i].pos2.y) {
+                    //checks for right collision
+                    if (this.pos.y > platforms[i].pos1.y + platforms[i].pos2.y && 
+                        this.pos.x > platforms[i].pos1.x + (platforms[i].pos2.x / 2) &&
+                        this.pos.y - this.size < platforms[i].pos1.y){  
                             this.pos.x = platforms[i].pos1.x + platforms[i].pos2.x
-                        }
-                        } 
                     }
+                    //checks for left collision
+                    if (this.pos.y > platforms[i].pos1.y + platforms[i].pos2.y && 
+                        this.pos.x < platforms[i].pos1.x + (platforms[i].pos2.x / 2) &&
+                        this.pos.y - this.size < platforms[i].pos1.y) {
+                            this.pos.x = platforms[i].pos1.x - this.size
+                    }
+                    //checks for bottom collision
+                    if (this.pos.y > platforms[i].pos1.y && 
+                        this.pos.x < platforms[i].pos1.x + platforms[i].pos2.x &&
+                        this.pos.x + this.size > platforms[i].pos1.x) {
+                        needFloat = false
+                    }
+                }
             }
     }
     
     move() {
         if (keyIsDown(68)) {
-            if (notColliding) 
-                {this.pos.x += 5}
+                this.pos.x += 5
             }
         if (keyIsDown(65)) {
-            if (notColliding) {
-                this.pos.x -= 5}
+                this.pos.x -= 5
             }
     }
     jump() {
