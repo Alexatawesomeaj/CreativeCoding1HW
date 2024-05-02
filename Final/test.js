@@ -1,21 +1,29 @@
 var player = []
 var platforms = []
+var dynamicPlatforms = []
 var canJump = true
 var momentum = 0
-var temp = 500
+var tempPos = 500
 var needFloat = false
+var standard = -1
+var timer = 0
+var onPlatform = false
 
 function setup() {
     createCanvas(1000, 500)
 
-    var b = new Player()
-    player.push(b)
+    var a = new Player()
+    player.push(a)
 
-    var c = new Platform(100, 500, 50, -25)
-    platforms.push(c)
+    var b = new Platform(100, 500, 50, -50)
+    platforms.push(b)
 
-    var c = new Platform(200, 450, 50, -100)
-    platforms.push(c)
+    var b = new Platform(200, 450, 50, -100)
+    platforms.push(b)
+
+    var c = new DynamicPlatform(400, 500, 100, -25)
+    dynamicPlatforms.push(c)
+    
 }
 
 function draw() {
@@ -25,13 +33,20 @@ function draw() {
     player[0].edges()
     player[0].gravity()
     player[0].move()
-    player[0].collide()
     player[0].hasMomentum()
     player[0].float()
-    for(var a = 0; a < platforms.length; a++){
-        platforms[a].show()
+    for(var y = 0; y < platforms.length; y++){
+        platforms[y].show()
+        platforms[y].collide()
+    }
+    for(var z = 0; z < dynamicPlatforms.length; z++){
+        dynamicPlatforms[z].show()
+        dynamicPlatforms[z].work()
+        dynamicPlatforms[z].collide()
     }
     console.log(player[0].pos.y)
+
+    if (player[0].pos.y + player[0].height < 0 || player[0].pos.y > 500) {player[0].death()}
 }
 
 class Platform {
@@ -39,11 +54,101 @@ class Platform {
         this.pos1 = createVector(x, y)
         this.pos2 = createVector(w, h)
     }
+
     show() {
         noStroke()
         fill(255)
         rect(this.pos1.x, this.pos1.y, this.pos2.x, this.pos2.y)
     }
+
+    collide() {
+        if (player[0].pos.x <= this.pos1.x + this.pos2.x &&
+            player[0].pos.x + player[0].size >= this.pos1.x &&
+            player[0].pos.y >= this.pos1.y + this.pos2.y &&
+            player[0].pos.y - player[0].size <= this.pos1.y)
+            {
+                //checks for top collision
+                if (player[0].pos.y < this.pos1.y + (this.pos2.y / 2) &&
+                    player[0].pos.x < this.pos1.x + this.pos2.x -1 &&
+                    player[0].pos.x + player[0].size > this.pos1.x + 1) {
+                    player[0].pos.y = this.pos1.y + this.pos2.y
+                }
+                //checks for right collision
+                if (player[0].pos.y > this.pos1.y + this.pos2.y && 
+                    player[0].pos.x > this.pos1.x + (this.pos2.x / 2) &&
+                    player[0].pos.y - player[0].size < this.pos1.y){  
+                        player[0].pos.x = this.pos1.x + this.pos2.x
+                }
+                //checks for left collision
+                if (player[0].pos.y > this.pos1.y + this.pos2.y && 
+                    player[0].pos.x < this.pos1.x + (this.pos2.x / 2) &&
+                    player[0].pos.y - player[0].size < this.pos1.y) {
+                        player[0].pos.x = this.pos1.x - player[0].size
+                }
+                //checks for bottom collision
+                if (player[0].pos.y > this.pos1.y && 
+                    player[0].pos.x < this.pos1.x + this.pos2.x &&
+                    player[0].pos.x + player[0].size > this.pos1.x) {
+                    needFloat = false
+                    }
+                }
+    }
+}
+
+class DynamicPlatform {
+    constructor(x, y, h, w) {
+        this.pos1 = createVector(x, y)
+        this.pos2 = createVector(h, w)
+    }
+
+    show() {
+        noStroke()
+        fill(255)
+        rect(this.pos1.x, this.pos1.y, this.pos2.x, this.pos2.y)
+    }
+
+    work() {
+        this.pos1.y += standard
+        if (timer / 360 == 1) {
+            standard *= -1
+            timer = 0}
+        timer += 3
+        }
+
+    collide() {
+        if (player[0].pos.x <= this.pos1.x + this.pos2.x &&
+            player[0].pos.x + player[0].size >= this.pos1.x &&
+            player[0].pos.y >= this.pos1.y + this.pos2.y &&
+            player[0].pos.y - player[0].size <= this.pos1.y)
+            {
+                // checks for top collision 
+                if (player[0].pos.y < this.pos1.y + (this.pos2.y / 2) &&
+                    player[0].pos.x < this.pos1.x + this.pos2.x &&
+                    player[0].pos.x + player[0].size > this.pos1.x) {
+                    player[0].pos.y = this.pos1.y + this.pos2.y
+                    onPlatform = true
+                } 
+                // checks for right collision 
+                if (player[0].pos.y > this.pos1.y + this.pos2.y && 
+                    player[0].pos.x > this.pos1.x + (this.pos2.x / 2) &&
+                    player[0].pos.y - player[0].size < this.pos1.y){  
+                        player[0].pos.x = this.pos1.x + this.pos2.x
+                } 
+                // checks for left collision 
+                if (player[0].pos.y > this.pos1.y + this.pos2.y && 
+                    player[0].pos.x < this.pos1.x + (this.pos2.x / 2) &&
+                    player[0].pos.y - player[0].size < this.pos1.y) {
+                        player[0].pos.x = this.pos1.x - player[0].size
+                        onPlatform = true
+                } 
+                // checks for bottom collision
+                if (player[0].pos.y > this.pos1.y && 
+                    player[0].pos.x < this.pos1.x + this.pos2.x &&
+                    player[0].pos.x + player[0].size > this.pos1.x) {
+                    if (player[0].pos.y == 500) {player[0].death()}
+                    }
+                }
+        }
 }
 
 class Player {
@@ -69,42 +174,6 @@ class Player {
         fill(255)
         rect(this.pos.x, this.pos.y, this.size, 0-this.size)
     }
-
-    collide() {
-        for(var i = 0; i < platforms.length; i ++)
-        {
-            if (this.pos.x <= platforms[i].pos1.x + platforms[i].pos2.x &&
-                this.pos.x + this.size >= platforms[i].pos1.x &&
-                this.pos.y >= platforms[i].pos1.y + platforms[i].pos2.y &&
-                this.pos.y - this.size <= platforms[i].pos1.y)
-                {
-                    //checks for top collision
-                    if (this.pos.y < platforms[i].pos1.y + (platforms[i].pos2.y / 2) &&
-                        this.pos.x < platforms[i].pos1.x + platforms[i].pos2.x &&
-                        this.pos.x + this.size > platforms[i].pos1.x) {
-                        this.pos.y = platforms[i].pos1.y + platforms[i].pos2.y
-                    }
-                    //checks for right collision
-                    if (this.pos.y > platforms[i].pos1.y + platforms[i].pos2.y && 
-                        this.pos.x > platforms[i].pos1.x + (platforms[i].pos2.x / 2) &&
-                        this.pos.y - this.size < platforms[i].pos1.y){  
-                            this.pos.x = platforms[i].pos1.x + platforms[i].pos2.x
-                    }
-                    //checks for left collision
-                    if (this.pos.y > platforms[i].pos1.y + platforms[i].pos2.y && 
-                        this.pos.x < platforms[i].pos1.x + (platforms[i].pos2.x / 2) &&
-                        this.pos.y - this.size < platforms[i].pos1.y) {
-                            this.pos.x = platforms[i].pos1.x - this.size
-                    }
-                    //checks for bottom collision
-                    if (this.pos.y > platforms[i].pos1.y && 
-                        this.pos.x < platforms[i].pos1.x + platforms[i].pos2.x &&
-                        this.pos.x + this.size > platforms[i].pos1.x) {
-                        needFloat = false
-                    }
-                }
-            }
-    }
     
     move() {
         if (keyIsDown(68)) {
@@ -114,23 +183,33 @@ class Player {
                 this.pos.x -= 5
             }
     }
+
     jump() {
-        if (momentum == 0) {
+        if (momentum == 0 || onPlatform) {
             needFloat = true
-            setTimeout(() => {needFloat = false}, 250);
+            onPlatform = false
+            setTimeout(() => {needFloat = false;}, 250);
         }
     }
+
     gravity() {
         this.pos.y += 5
     }
+
     hasMomentum() {
-        momentum = temp - this.pos.y
-        temp = this.pos.y
+        momentum = tempPos - this.pos.y
+        tempPos = this.pos.y
     }
+
     float() {
         if (needFloat == true) {
             this.pos.y -= 10
         }
+    }
+
+    death() {
+        console.log("died lol")
+        //TODO GAME OVER
     }
 }
 
