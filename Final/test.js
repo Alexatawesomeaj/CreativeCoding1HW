@@ -1,4 +1,5 @@
 //This WAS my testing page... but now its just the program!
+//Object storage
 var player = 0
 var platforms = []
 var dynamicPlatforms = []
@@ -6,6 +7,8 @@ var killBoxs = []
 var levels = 0
 var completedLevels = []
 var exit = 0
+
+//Player Variables
 var canJump = true
 var momentum = 0
 var tempPos = 500
@@ -218,9 +221,9 @@ class DynamicPlatform {
             player.pos.y - player.size <= this.pos1.y)
             {
                 // checks for bottom collision
-                if (player.pos.y - player.size < this.pos1.y && 
+                if (player.pos.y > this.pos1.y && 
                     player.pos.x < this.pos1.x + this.pos2.x &&
-                    player.pos.x - player.size > this.pos1.x) {
+                    player.pos.x + player.size > this.pos1.x) {
                     needFloat = false
                     if (player.pos.y == 500 && this.movement > 0) {player.death()}
                     }
@@ -242,8 +245,7 @@ class DynamicPlatform {
                     player.pos.x + player.size > this.pos1.x) {
                     player.pos.y = this.pos1.y + this.pos2.y
                     onPlatform = true
-                    console.log("onPlatform")
-                    jumpAdd = Math.abs(this.movement)
+                    jumpAdd = this.movement
                 }
             } else {onPlatform = false}
         }
@@ -366,7 +368,6 @@ class Player {
         if (momentum == 0 || onPlatform) {
             needFloat = true
             onPlatform = false
-            console.log("jumped")
             setTimeout(() => {needFloat = false;}, 250);
         }
     }
@@ -383,9 +384,8 @@ class Player {
 
     float() {
         if (needFloat == true) {
-            console.log("floating")
             needFloat = true
-            this.pos.y -= (10 + jumpAdd)
+            this.pos.y -= (10 - jumpAdd)
         }
     }
 
@@ -409,6 +409,7 @@ class Level {
         exit = 0
         killBoxs = []
     }
+
     levelGen(level) {
         levelNumber = level
         if (level == "dev") {
@@ -421,6 +422,9 @@ class Level {
             var a = new DynamicPlatform(400, 500, 100, -25, 25, 500)
             dynamicPlatforms.push(a)
 
+            var a = new KillBox(0, 400, 10, -350)
+            killBoxs.push(a)
+
             dynamicPlatforms[0].color()
             for(var y1 = 0; y1 < platforms.length; y1 ++){
                 platforms[y1].color()
@@ -428,6 +432,14 @@ class Level {
             exit = new Exit(900, 500)
             player.pos.x = 10
             player.pos.y = 500
+        }
+        if (level == "1"){
+            exit = new Exit(900, 500)
+            player.pos.x = 10
+            player.pos.y = 500
+        }
+        if (level == "None") {
+            
         }
     }
 
@@ -442,6 +454,11 @@ class Level {
             dynamicPlatforms[y].work()
             dynamicPlatforms[y].collide()
             dynamicPlatforms[y].intensity()
+        }
+
+        for(var y = 0; y < killBoxs.length; y++){
+            killBoxs[y].show()
+            killBoxs[y].collide()
         }
 
         exit.show()
@@ -463,8 +480,54 @@ class Level {
     }
 }
 
+class KillBox {
+    constructor(x, y, w, h) {
+        this.pos1 = createVector(x, y)
+        this.pos2 = createVector(w, h)
+    }
+
+    show() {
+        noStroke()
+        fill(255, 0, 0)
+        rect(this.pos1.x, this.pos1.y, this.pos2.x, this.pos2.y)
+    }
+
+    collide() {
+        if (player.pos.x <= this.pos1.x + this.pos2.x &&
+            player.pos.x + player.size >= this.pos1.x &&
+            player.pos.y >= this.pos1.y + this.pos2.y &&
+            player.pos.y - player.size <= this.pos1.y)
+            {
+                //checks for right collision
+                if (player.pos.y > this.pos1.y + this.pos2.y + 5 && 
+                    player.pos.x > this.pos1.x + (this.pos2.x / 2) &&
+                    player.pos.y - player.size < this.pos1.y){  
+                        player.death()
+                }
+                //checks for left collision
+                if (player.pos.y > this.pos1.y + this.pos2.y + 5 && 
+                    player.pos.x < this.pos1.x + (this.pos2.x / 2) &&
+                    player.pos.y - player.size < this.pos1.y) {
+                        player.death()
+                }
+                //checks for bottom collision
+                if (player.pos.y > this.pos1.y && 
+                    player.pos.x < this.pos1.x + this.pos2.x &&
+                    player.pos.x + player.size > this.pos1.x) {
+                        player.death()
+                }
+                //checks for top collision
+                if (player.pos.y < this.pos1.y + (this.pos2.y / 2) &&
+                    player.pos.x < this.pos1.x + this.pos2.x &&
+                    player.pos.x + player.size > this.pos1.x) {
+                        player.death()
+                }
+        }
+    }
+}
+
 function keyPressed() {
-    if (key == " ") {player.jump(); console.log("space key pressed")}
+    if (key == " ") {player.jump()}
     if (key == "q") {volume --}
     if (key == "e") {volume ++}
 } 
