@@ -1,12 +1,13 @@
 //This WAS my testing page... but now its just the program!
 //Object storage
-var player = 0
+var player = []
 var platforms = []
 var dynamicPlatforms = []
 var killBoxs = []
-var levels = 0
+var levels = []
 var completedLevels = []
-var exit = 0
+var exit = []
+var buttons = []
 
 //Player Variables
 var canJump = true
@@ -16,15 +17,14 @@ var needFloat = false
 var onPlatform = false
 var levelNumber = 0
 var volume = 3
-var currentLevel = "none"
+var currentLevel = "None"
 var jumpAdd = 0
 
 function setup() {
     createCanvas(1000, 500)
 
     levels = new Level()
-    player = new Player()
-    levels.levelGen("dev")
+    levels.levelGen("None")
 }
 
 function draw() {
@@ -34,10 +34,154 @@ function draw() {
     levels.render()
 }
 
+class Level {
+    constructor() {}
+    
+    reset(){
+        player = []
+        platforms = []
+        dynamicPlatforms = []
+        killBoxs = []
+        exit = []
+        buttons = []
+    }
+
+    levelGen(level) {
+        currentLevel = level
+        for(var y = 0; y < dynamicPlatforms.length; y++) {
+            dynamicPlatforms[y].color()
+        }
+        for(var y = 0; y < platforms.length; y++) {
+            platforms[y].color()
+        }
+        if (level == "dev") {
+            var a = new Platform(100, 500, 50, -50)
+            platforms.push(a)
+
+            var a = new Platform(200, 450, 50, -100)
+            platforms.push(a)
+
+            var a = new DynamicPlatform(400, 500, 100, -25, 25, 500)
+            dynamicPlatforms.push(a)
+
+            var a = new KillBox(0, 400, 10, -350)
+            killBoxs.push(a)
+
+            dynamicPlatforms[0].color()
+            for(var y1 = 0; y1 < platforms.length; y1 ++){
+                platforms[y1].color()
+            }
+
+            var a = new Exit(900, 500)
+            exit.push(a)
+
+            var a = new Player
+            player.push(a)
+
+            player[0].pos.x = 10
+            player[0].pos.y = 500
+        }
+        if (level == "1"){
+            a = new Exit(900, 300)
+            exit.push(a)
+
+            a = new Player()
+            player.push(a)
+
+            player[0].pos.x = 10
+            player[0].pos.y = 300
+
+            a = new KillBox(0, 500, 1000, -5)
+            killBoxs.push(a)
+
+            a = new Platform(0, 500, 100, -200)
+            platforms.push(a)
+
+            a = new Platform(200, 500, 100, -225)
+            platforms.push(a)
+
+            a = new Platform(450, 500, 100, -150)
+            platforms.push(a)
+
+
+        }
+        if (level == "None") {
+            a = new Button(125, 200, 1, true)
+            buttons.push(a)
+
+            a = new Button(275, 200, 2, true)
+            buttons.push(a)
+
+            a = new Button(425, 200, 3, true)
+            buttons.push(a)
+
+            a = new Button(575, 200, 4, true)
+            buttons.push(a)
+
+            a = new Button(725, 200, 5, true)
+            buttons.push(a)
+
+            a = new Button(425, 300, "dev", true)
+            buttons.push(a)
+        }
+    }
+
+    render() {
+        for(var y = 0; y < platforms.length; y++){
+            platforms[y].show()
+            platforms[y].collide()
+            platforms[y].intensity()
+        }
+        for(var y = 0; y < dynamicPlatforms.length; y++){
+            dynamicPlatforms[y].show()
+            dynamicPlatforms[y].work()
+            dynamicPlatforms[y].collide()
+            dynamicPlatforms[y].intensity()
+        }
+
+        for(var y = 0; y < killBoxs.length; y++){
+            killBoxs[y].show()
+            killBoxs[y].collide()
+        }
+
+        for(var y = 0; y < player.length; y++){
+            player[y].show()
+            player[y].edges()
+            player[y].gravity()
+            player[y].move()
+            player[y].hasMomentum()
+            player[y].float()
+            player[y].volControll()
+        }
+
+        for(var y = 0; y < exit.length; y++){
+            exit[0].show()
+            exit[0].collide()
+        }
+
+        for(var y = 0; y < buttons.length; y++) {
+            buttons[y].show()
+            buttons[y].clicked()
+        }
+
+    }
+
+    showVolume() {
+        if(currentLevel != "None") {
+            fill(255)
+            noStroke()
+            textSize(20)
+            textAlign(LEFT)
+            text("Volume: "+volume, 5, 25)
+        }
+    }
+}
+
 class Exit {
     constructor(x=0, y=0) {
         this.pos = createVector(x, y)
     }
+
     show() {
         noStroke()
         fill(41, 19, 209)
@@ -57,6 +201,21 @@ class Exit {
         text(levelNumber, this.pos.x + 17.25, this.pos.y - 65.5)
     }
 
+    collide() {
+        if (player[0].pos.x <= this.pos.x + 35 &&
+            player[0].pos.x + player[0].size >= this.pos.x &&
+            player[0].pos.y >= this.pos.y - 55 &&
+            player[0].pos.y - player[0].size <= this.pos.y)
+            {
+                console.log("balls")
+                if (currentLevel != "dev") {
+                    completedLevels.push(currentLevel)
+                }
+                levels.reset()
+                levels.levelGen("None")
+        }
+
+    }
 }
 
 class Platform {
@@ -150,34 +309,34 @@ class Platform {
     }
 
     collide() {
-        if (player.pos.x <= this.pos1.x + this.pos2.x &&
-            player.pos.x + player.size >= this.pos1.x &&
-            player.pos.y >= this.pos1.y + this.pos2.y &&
-            player.pos.y - player.size <= this.pos1.y)
+        if (player[0].pos.x <= this.pos1.x + this.pos2.x &&
+            player[0].pos.x + player[0].size >= this.pos1.x &&
+            player[0].pos.y >= this.pos1.y + this.pos2.y &&
+            player[0].pos.y - player[0].size <= this.pos1.y)
             {
                 //checks for right collision
-                if (player.pos.y > this.pos1.y + this.pos2.y + 5 && 
-                    player.pos.x > this.pos1.x + (this.pos2.x / 2) &&
-                    player.pos.y - player.size < this.pos1.y){  
-                        player.pos.x = this.pos1.x + this.pos2.x
+                if (player[0].pos.y > this.pos1.y + this.pos2.y + 5 && 
+                    player[0].pos.x > this.pos1.x + (this.pos2.x / 2) &&
+                    player[0].pos.y - player[0].size < this.pos1.y){  
+                        player[0].pos.x = this.pos1.x + this.pos2.x
                 }
                 //checks for left collision
-                if (player.pos.y > this.pos1.y + this.pos2.y + 5 && 
-                    player.pos.x < this.pos1.x + (this.pos2.x / 2) &&
-                    player.pos.y - player.size < this.pos1.y) {
-                        player.pos.x = this.pos1.x - player.size
+                if (player[0].pos.y > this.pos1.y + this.pos2.y + 5 && 
+                    player[0].pos.x < this.pos1.x + (this.pos2.x / 2) &&
+                    player[0].pos.y - player[0].size < this.pos1.y) {
+                        player[0].pos.x = this.pos1.x - player[0].size
                 }
                 //checks for bottom collision
-                if (player.pos.y > this.pos1.y && 
-                    player.pos.x < this.pos1.x + this.pos2.x &&
-                    player.pos.x + player.size > this.pos1.x) {
+                if (player[0].pos.y > this.pos1.y && 
+                    player[0].pos.x < this.pos1.x + this.pos2.x &&
+                    player[0].pos.x + player[0].size > this.pos1.x) {
                         needFloat = false
                 }
                 //checks for top collision
-                if (player.pos.y < this.pos1.y + (this.pos2.y / 2) &&
-                    player.pos.x < this.pos1.x + this.pos2.x &&
-                    player.pos.x + player.size > this.pos1.x) {
-                    player.pos.y = this.pos1.y + this.pos2.y
+                if (player[0].pos.y < this.pos1.y + (this.pos2.y / 2) &&
+                    player[0].pos.x < this.pos1.x + this.pos2.x &&
+                    player[0].pos.x + player[0].size > this.pos1.x) {
+                    player[0].pos.y = this.pos1.y + this.pos2.y
                 }
         }
     }
@@ -215,35 +374,35 @@ class DynamicPlatform {
     }
 
     collide() {
-        if (player.pos.x <= this.pos1.x + this.pos2.x &&
-            player.pos.x + player.size >= this.pos1.x &&
-            player.pos.y >= this.pos1.y + this.pos2.y &&
-            player.pos.y - player.size <= this.pos1.y)
+        if (player[0].pos.x <= this.pos1.x + this.pos2.x &&
+            player[0].pos.x + player[0].size >= this.pos1.x &&
+            player[0].pos.y >= this.pos1.y + this.pos2.y &&
+            player[0].pos.y - player[0].size <= this.pos1.y)
             {
                 // checks for bottom collision
-                if (player.pos.y > this.pos1.y && 
-                    player.pos.x < this.pos1.x + this.pos2.x &&
-                    player.pos.x + player.size > this.pos1.x) {
+                if (player[0].pos.y > this.pos1.y && 
+                    player[0].pos.x < this.pos1.x + this.pos2.x &&
+                    player[0].pos.x + player[0].size > this.pos1.x) {
                     needFloat = false
-                    if (player.pos.y == 500 && this.movement > 0) {player.death()}
+                    if (player[0].pos.y == 500 && this.movement > 0) {player[0].death()}
                     }
                 //checks for left collision
-                if (player.pos.y - (5 + Math.abs(this.movement)) > this.pos1.y + this.pos2.y && 
-                    player.pos.x < this.pos1.x + (this.pos2.x / 2) &&
-                    player.pos.y - player.size + (Math.abs(this.movement)) < this.pos1.y){
-                        player.pos.x = this.pos1.x - player.size
+                if (player[0].pos.y - (5 + Math.abs(this.movement)) > this.pos1.y + this.pos2.y && 
+                    player[0].pos.x < this.pos1.x + (this.pos2.x / 2) &&
+                    player[0].pos.y - player[0].size + (Math.abs(this.movement)) < this.pos1.y){
+                        player[0].pos.x = this.pos1.x - player[0].size
                 }
                 //checks for right collision
-                if (player.pos.y - (5 + Math.abs(this.movement)) > this.pos1.y + this.pos2.y && 
-                    player.pos.x > this.pos1.x + (this.pos2.x / 2) &&
-                    player.pos.y - player.size + (Math.abs(this.movement)) < this.pos1.y){  
-                        player.pos.x = this.pos1.x + this.pos2.x
+                if (player[0].pos.y - (5 + Math.abs(this.movement)) > this.pos1.y + this.pos2.y && 
+                    player[0].pos.x > this.pos1.x + (this.pos2.x / 2) &&
+                    player[0].pos.y - player[0].size + (Math.abs(this.movement)) < this.pos1.y){  
+                        player[0].pos.x = this.pos1.x + this.pos2.x
                 }
                 //checks for top collision
-                if (player.pos.y < this.pos1.y + (this.pos2.y / 2) &&
-                    player.pos.x < this.pos1.x + this.pos2.x &&
-                    player.pos.x + player.size > this.pos1.x) {
-                    player.pos.y = this.pos1.y + this.pos2.y
+                if (player[0].pos.y < this.pos1.y + (this.pos2.y / 2) &&
+                    player[0].pos.x < this.pos1.x + this.pos2.x &&
+                    player[0].pos.x + player[0].size > this.pos1.x) {
+                    player[0].pos.y = this.pos1.y + this.pos2.y
                     onPlatform = true
                     jumpAdd = this.movement
                 }
@@ -400,86 +559,6 @@ class Player {
     }
 }
 
-class Level {
-    constructor() {}
-    
-    reset(){
-        platforms = []
-        dynamicPlatforms = []
-        exit = 0
-        killBoxs = []
-    }
-
-    levelGen(level) {
-        levelNumber = level
-        if (level == "dev") {
-            var a = new Platform(100, 500, 50, -50)
-            platforms.push(a)
-
-            var a = new Platform(200, 450, 50, -100)
-            platforms.push(a)
-
-            var a = new DynamicPlatform(400, 500, 100, -25, 25, 500)
-            dynamicPlatforms.push(a)
-
-            var a = new KillBox(0, 400, 10, -350)
-            killBoxs.push(a)
-
-            dynamicPlatforms[0].color()
-            for(var y1 = 0; y1 < platforms.length; y1 ++){
-                platforms[y1].color()
-            }
-            exit = new Exit(900, 500)
-            player.pos.x = 10
-            player.pos.y = 500
-        }
-        if (level == "1"){
-            exit = new Exit(900, 500)
-            player.pos.x = 10
-            player.pos.y = 500
-        }
-        if (level == "None") {
-            
-        }
-    }
-
-    render() {
-        for(var y = 0; y < platforms.length; y++){
-            platforms[y].show()
-            platforms[y].collide()
-            platforms[y].intensity()
-        }
-        for(var y = 0; y < dynamicPlatforms.length; y++){
-            dynamicPlatforms[y].show()
-            dynamicPlatforms[y].work()
-            dynamicPlatforms[y].collide()
-            dynamicPlatforms[y].intensity()
-        }
-
-        for(var y = 0; y < killBoxs.length; y++){
-            killBoxs[y].show()
-            killBoxs[y].collide()
-        }
-
-        exit.show()
-        player.show()
-        player.edges()
-        player.gravity()
-        player.move()
-        player.hasMomentum()
-        player.float()
-        player.volControll()
-    }
-
-    showVolume() {
-        fill(255)
-        noStroke()
-        textSize(20)
-        textAlign(LEFT)
-        text("Volume: "+volume, 5, 25)
-    }
-}
-
 class KillBox {
     constructor(x, y, w, h) {
         this.pos1 = createVector(x, y)
@@ -493,41 +572,58 @@ class KillBox {
     }
 
     collide() {
-        if (player.pos.x <= this.pos1.x + this.pos2.x &&
-            player.pos.x + player.size >= this.pos1.x &&
-            player.pos.y >= this.pos1.y + this.pos2.y &&
-            player.pos.y - player.size <= this.pos1.y)
-            {
-                //checks for right collision
-                if (player.pos.y > this.pos1.y + this.pos2.y + 5 && 
-                    player.pos.x > this.pos1.x + (this.pos2.x / 2) &&
-                    player.pos.y - player.size < this.pos1.y){  
-                        player.death()
-                }
-                //checks for left collision
-                if (player.pos.y > this.pos1.y + this.pos2.y + 5 && 
-                    player.pos.x < this.pos1.x + (this.pos2.x / 2) &&
-                    player.pos.y - player.size < this.pos1.y) {
-                        player.death()
-                }
-                //checks for bottom collision
-                if (player.pos.y > this.pos1.y && 
-                    player.pos.x < this.pos1.x + this.pos2.x &&
-                    player.pos.x + player.size > this.pos1.x) {
-                        player.death()
-                }
-                //checks for top collision
-                if (player.pos.y < this.pos1.y + (this.pos2.y / 2) &&
-                    player.pos.x < this.pos1.x + this.pos2.x &&
-                    player.pos.x + player.size > this.pos1.x) {
-                        player.death()
-                }
-        }
+        if (player[0].pos.x <= this.pos1.x + this.pos2.x &&
+            player[0].pos.x + player[0].size >= this.pos1.x &&
+            player[0].pos.y >= this.pos1.y + this.pos2.y &&
+            player[0].pos.y - player[0].size <= this.pos1.y){
+                player[0].death()
+            } 
     }
 }
 
+class Button {
+    constructor(x, y, number, avaliable=true) {
+        this.pos = createVector(x, y)
+        this.text = String(number)
+        this.avaliable = avaliable
+    }
+
+    show() {
+        stroke(255)
+        strokeWeight(5)
+        fill(0)
+        rect(this.pos.x, this.pos.y, 100, -60)
+        
+        
+        textAlign(CENTER)
+        textSize(30)
+        noStroke()
+        fill(255)
+        text(this.text, this.pos.x+49, this.pos.y-19)
+
+    }
+    
+    clicked() {
+        if (mouseIsPressed && mouseButton == "left") {
+            if (mouseX >= this.pos.x &&
+                mouseX <= this.pos.x + 100 &&
+                mouseY >= this.pos.y - 60 &&
+                mouseY <= this.pos.y) {
+                    console.log(this.text)
+                    levels.reset()
+                    levels.levelGen(this.text)
+                }
+        }
+    }
+
+}
+
 function keyPressed() {
-    if (key == " ") {player.jump()}
+    if (key == " ") {player[0].jump()}
     if (key == "q") {volume --}
     if (key == "e") {volume ++}
+    if (key == "r") {
+        levels.reset()
+        levels.levelGen("None")
+    }
 } 
