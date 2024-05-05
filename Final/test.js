@@ -6,7 +6,7 @@ var dynamicPlatforms = []
 var killBoxs = []
 var levels = []
 var completedLevels = []
-var exit = []
+var exits = []
 var buttons = []
 
 //Player Variables
@@ -19,6 +19,7 @@ var levelNumber = 0
 var volume = 3
 var currentLevel = "None"
 var jumpAdd = 0
+var needMove = true
 
 function setup() {
     createCanvas(1000, 500)
@@ -42,18 +43,12 @@ class Level {
         platforms = []
         dynamicPlatforms = []
         killBoxs = []
-        exit = []
+        exits = []
         buttons = []
     }
 
     levelGen(level) {
         currentLevel = level
-        for(var y = 0; y < dynamicPlatforms.length; y++) {
-            dynamicPlatforms[y].color()
-        }
-        for(var y = 0; y < platforms.length; y++) {
-            platforms[y].color()
-        }
         if (level == "dev") {
             var a = new Platform(100, 500, 50, -50)
             platforms.push(a)
@@ -73,7 +68,7 @@ class Level {
             }
 
             var a = new Exit(900, 500)
-            exit.push(a)
+            exits.push(a)
 
             var a = new Player
             player.push(a)
@@ -83,7 +78,7 @@ class Level {
         }
         if (level == "1"){
             a = new Exit(900, 300)
-            exit.push(a)
+            exits.push(a)
 
             a = new Player()
             player.push(a)
@@ -103,8 +98,96 @@ class Level {
             a = new Platform(450, 500, 100, -150)
             platforms.push(a)
 
+            a = new Platform(600, 500, 50, -200)
+            platforms.push(a)
 
+            a = new Platform(800, 500, 50, -200)
+            platforms.push(a)
+
+            a = new Platform(850, 350, 150, -50)
+            platforms.push(a)
+
+            for(var y = 0; y < platforms.length; y++) {
+                platforms[y].color()
+            }
         }
+
+        if (level == "2"){
+            a = new Player()
+            player.push(a)
+
+            a = new Exit(950, 500)
+            exits.push(a)
+
+            a = new Platform(900, 500, 25, -300)
+            platforms.push(a)
+
+            a = new DynamicPlatform(850, 500, 50, -25, 350, 500)
+            dynamicPlatforms.push(a)
+
+            a = new Platform(750, 150, 250, -150)
+            platforms.push(a)
+
+            a = new Platform(0, 450, 50, -25)
+            platforms.push(a)
+
+            a = new Platform(0, 370, 50, -25)
+            platforms.push(a)
+
+            a = new Platform(0, 290, 50, -25)
+            platforms.push(a)
+
+            a = new Platform(0, 210, 50, -25)
+            platforms.push(a)
+
+            a = new Platform(0, 130, 50, -25)
+            platforms.push(a)
+
+            a = new Platform(100, 500, 25, -425)
+            platforms.push(a)
+
+            //Poles
+            a = new Platform(150, 475, 50, -475)
+            platforms.push(a)
+
+            a = new Platform(250, 475, 50, -475)
+            platforms.push(a)
+
+            a = new Platform(350, 475, 50, -475)
+            platforms.push(a)
+
+            a = new Platform(450, 475, 50, -475)
+            platforms.push(a)
+
+            a = new Platform(550, 475, 50, -475)
+            platforms.push(a)
+
+            a = new Platform(650, 475, 50, -475)
+            platforms.push(a)
+
+            a = new Platform(750, 475, 50, -475)
+            platforms.push(a)
+
+            //moving platforms
+            a = new DynamicPlatform(200, 475, 50, -500, 400, 500, -72)
+            dynamicPlatforms.push(a)
+
+            a = new DynamicPlatform(300, 475, 50, -500, 400, 500, -72)
+            dynamicPlatforms.push(a)
+
+            a = new DynamicPlatform(400, 475, 50, -500, 400, 500, -72)
+            dynamicPlatforms.push(a)
+
+            a = new DynamicPlatform(500, 475, 50, -500, 400, 500, -72)
+            dynamicPlatforms.push(a)
+
+            a = new DynamicPlatform(600, 475, 50, -500, 400, 500, -72)
+            dynamicPlatforms.push(a)
+
+            a = new DynamicPlatform(700, 475, 50, -500, 400, 500, -72)
+            dynamicPlatforms.push(a)
+        }
+
         if (level == "None") {
             a = new Button(125, 200, 1, true)
             buttons.push(a)
@@ -154,9 +237,9 @@ class Level {
             player[y].volControll()
         }
 
-        for(var y = 0; y < exit.length; y++){
-            exit[0].show()
-            exit[0].collide()
+        for(var y = 0; y < exits.length; y++){
+            exits[y].show()
+            exits[y].collide()
         }
 
         for(var y = 0; y < buttons.length; y++) {
@@ -172,7 +255,7 @@ class Level {
             noStroke()
             textSize(20)
             textAlign(LEFT)
-            text("Volume: "+volume, 5, 25)
+            text("Speed: "+volume, 5, 25)
         }
     }
 }
@@ -207,9 +290,12 @@ class Exit {
             player[0].pos.y >= this.pos.y - 55 &&
             player[0].pos.y - player[0].size <= this.pos.y)
             {
-                console.log("balls")
+                let seen = true
                 if (currentLevel != "dev") {
-                    completedLevels.push(currentLevel)
+                    for (var y = 0; y < completedLevels.length; y++) {
+                        if (completedLevels[y] == currentLevel) {seen = false}
+                    }
+                    if (seen) {completedLevels.push(currentLevel)}
                 }
                 levels.reset()
                 levels.levelGen("None")
@@ -343,20 +429,19 @@ class Platform {
 
     color() {
         this.chosenColor = Math.floor(Math.random()*3)
-        console.log(this.chosenColor)
     }
 }
 
 class DynamicPlatform {
-    constructor(x, y, w, h, up=0, down=500) {
+    constructor(x, y, w, h, up=0, down=500, speed=-3) {
         this.pos1 = createVector(x, y)
         this.pos2 = createVector(w, h)
-        this.movement = -3
+        this.movement = speed
         this.R = 255
         this.G = 255
         this.B = 255
         this.chosenColor = 0
-        this.upperBound = up - h
+        this.upperBound = up
         this.lowerBound = down
     }
 
@@ -368,7 +453,7 @@ class DynamicPlatform {
 
     work() {
         this.pos1.y += this.movement
-        if (this.pos1.y <= this.upperBound  || this.pos1.y >= this.lowerBound) {
+        if (this.pos1.y <= this.upperBound || this.pos1.y >= this.lowerBound){
             this.movement *= -1
         }
     }
@@ -384,7 +469,6 @@ class DynamicPlatform {
                     player[0].pos.x < this.pos1.x + this.pos2.x &&
                     player[0].pos.x + player[0].size > this.pos1.x) {
                     needFloat = false
-                    if (player[0].pos.y == 500 && this.movement > 0) {player[0].death()}
                     }
                 //checks for left collision
                 if (player[0].pos.y - (5 + Math.abs(this.movement)) > this.pos1.y + this.pos2.y && 
@@ -411,7 +495,6 @@ class DynamicPlatform {
     
     color() {
         this.chosenColor = Math.floor(Math.random()*3)
-        console.log(this.chosenColor)
     }
 
     intensity() {
@@ -550,7 +633,8 @@ class Player {
 
     death() {
         console.log("died lol")
-        //TODO GAME OVER
+        levels.reset()
+        levels.levelGen("None")
     }
 
     volControll() {
@@ -626,4 +710,4 @@ function keyPressed() {
         levels.reset()
         levels.levelGen("None")
     }
-} 
+}
