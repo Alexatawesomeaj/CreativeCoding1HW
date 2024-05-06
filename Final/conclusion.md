@@ -1,0 +1,5 @@
+#A recap of my final
+
+I attempted to make a game using p5.js, hopefully to allow the player to change the volume of music and have it significantly altar gameplay, specifically with the use of moving platforms. All of this did not come into fruition, however. I did manage to make a very elementary game with collisions, a level screen, a few levels, death, as well as moving platforms, that of which speed can be altered with the press of 'q' and 'e'. I also didn't end up making an option to change the keybinds. I am happy with what I made, however, even though it was not completely up to what I wanted, but that's why we make goals, to shoot for them, and sometimes miss. This was my first ever experience coding something 'full' in javascript, as well as my first experience with college as a whole. Im glad I did it, thank you much!
+
+(Im sorry I didn't do too much on the game, but I enjoyed it nonetheless!)
